@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Download, Loader2, ExternalLink } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DownloadButtonProps {
@@ -28,17 +28,17 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         {isLoading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Processing...</span>
+            <span>Processing Download...</span>
           </>
         ) : (
           <>
-            <ExternalLink className="w-5 h-5" />
-            <span>Get Download Link</span>
+            <Download className="w-5 h-5" />
+            <span>Download Video</span>
           </>
         )}
       </button>
       <p className="text-xs text-center mt-2 text-muted-foreground">
-        You will be redirected to a secure download service
+        Your download will start automatically
       </p>
     </div>
   );
