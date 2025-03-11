@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import PlatformSelector, { Platform } from '@/components/PlatformSelector';
@@ -7,7 +6,7 @@ import DownloadOptions, { Quality } from '@/components/DownloadOptions';
 import DownloadButton from '@/components/DownloadButton';
 import VideoCard from '@/components/VideoCard';
 import { fetchVideoData, downloadVideo } from '@/lib/videoUtils';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 const Index = () => {
   // State management
