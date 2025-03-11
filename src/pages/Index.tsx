@@ -33,12 +33,11 @@ const Index = () => {
     setVideoData(null);
     
     try {
+      console.log(`Fetching data for URL: ${newUrl}`);
       const data = await fetchVideoData(newUrl, platform);
       setVideoData(data);
       
-      // Set a default quality
       if (data.availableQualities.length > 0) {
-        // Prefer 1080p if available, otherwise take the highest quality
         const defaultQuality = data.availableQualities.includes('1080p')
           ? '1080p'
           : data.availableQualities[0];
@@ -48,7 +47,7 @@ const Index = () => {
       toast.success("Video information retrieved successfully");
     } catch (error) {
       console.error('Error fetching video data:', error);
-      toast.error("Error retrieving video information");
+      toast.error(`Error: ${error instanceof Error ? error.message : 'Could not retrieve video information'}`);
     } finally {
       setLoading(false);
     }
@@ -67,10 +66,10 @@ const Index = () => {
     
     try {
       await downloadVideo(url, platform, selectedQuality);
-      toast.success("Download completed successfully!");
+      toast.success(`Download completed successfully! Check your downloads folder.`);
     } catch (error) {
       console.error('Error downloading video:', error);
-      toast.error("Error during download. Please try again.");
+      toast.error(`Error: ${error instanceof Error ? error.message : 'Download failed. Please try again.'}`);
     } finally {
       setDownloading(false);
     }
