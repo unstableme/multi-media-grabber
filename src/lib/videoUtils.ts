@@ -196,7 +196,7 @@ export const fetchVideoData = async (url: string, platform: Platform): Promise<V
   }
 };
 
-// Download function remains mostly unchanged, but logs real video ID
+// Updated download function that generates a proper download link
 export const downloadVideo = async (url: string, platform: Platform, quality: Quality): Promise<void> => {
   const videoId = extractVideoId(url, platform);
   
@@ -207,55 +207,81 @@ export const downloadVideo = async (url: string, platform: Platform, quality: Qu
   console.log(`Downloading ${platform} video ${videoId} in ${quality} quality`);
   
   try {
-    // In a real application with a backend (Django as mentioned), this would make an API call
-    // to your backend that would handle the actual video download using youtube-dl, pytube, etc.
+    // In a real implementation, this would connect to a backend service
+    // For this demo, we'll use public APIs where possible
     
-    // For this frontend demo, we'll create a download file by generating a simulated video
-    // The file will just be a text file with the filename matching the video platform and ID
+    let downloadUrl = '';
+    let fileName = '';
     
-    // Create a binary file to simulate a small video file (enough to trigger a download)
-    // In a real app, your backend would stream the actual video file
-    
-    // Generate some binary data to simulate a video file (1KB of data)
-    const array = new Uint8Array(1024);
-    for (let i = 0; i < array.length; i++) {
-      array[i] = Math.floor(Math.random() * 256);
+    switch (platform) {
+      case 'youtube': {
+        // For YouTube, create a link to a public YouTube download service
+        // Note: In a production app, you would use your own server for this
+        const extension = quality === 'audio' ? 'mp3' : 'mp4';
+        
+        // For demo purposes: redirect to a YouTube video download service
+        // Format the URL that the user provided in a common player format
+        // This is a workaround for demo purposes only
+        if (url.includes('youtube.com')) {
+          downloadUrl = `https://www.y2mate.com/youtube/${videoId}`;
+          fileName = `youtube_${videoId}_${quality}.${extension}`;
+          
+          // Open the download service in a new tab
+          window.open(downloadUrl, '_blank');
+          toast.success('Redirecting to download service...');
+          return;
+        } else {
+          // If direct download is not available, provide instructions
+          toast.info('For YouTube videos, please use the download service that will open in a new tab.');
+          window.open(`https://www.y2mate.com/youtube/${videoId}`, '_blank');
+          return;
+        }
+      }
+      
+      case 'instagram': {
+        // For Instagram, we would need a server with proper authentication
+        // For this demo, we'll redirect to a public Instagram download service
+        downloadUrl = `https://www.instagram.com/p/${videoId}/`;
+        fileName = `instagram_${videoId}_${quality}.mp4`;
+        
+        window.open(`https://www.instagramsave.com/instagram-video-downloader.php?url=${encodeURIComponent(downloadUrl)}`, '_blank');
+        toast.success('Redirecting to Instagram download service...');
+        return;
+      }
+      
+      case 'tiktok': {
+        // For TikTok, redirect to a public TikTok download service
+        downloadUrl = `https://www.tiktok.com/video/${videoId}`;
+        fileName = `tiktok_${videoId}_${quality}.mp4`;
+        
+        window.open(`https://ssstik.io/en?url=${encodeURIComponent(downloadUrl)}`, '_blank');
+        toast.success('Redirecting to TikTok download service...');
+        return;
+      }
+      
+      default:
+        throw new Error(`Unsupported platform: ${platform}`);
     }
-    
-    // Create a Blob from the array
-    let mimeType = 'video/mp4';
-    if (quality === 'audio') {
-      mimeType = 'audio/mp3';
-    }
-    
-    const videoBlob = new Blob([array], { type: mimeType });
-    
-    // Create a URL for the Blob
-    const videoUrl = URL.createObjectURL(videoBlob);
-    
-    // Create a download link
-    const link = document.createElement('a');
-    
-    // Set the filename based on the platform, video ID, and selected quality
-    const extension = quality === 'audio' ? 'mp3' : 'mp4';
-    const fileName = `${platform}_${videoId}_${quality}.${extension}`;
-    
-    link.href = videoUrl;
-    link.download = fileName;
-    
-    // Append to the body (required for Firefox)
-    document.body.appendChild(link);
-    
-    // Trigger the download
-    link.click();
-    
-    // Clean up
-    document.body.removeChild(link);
-    URL.revokeObjectURL(videoUrl);
-    
-    console.log('Download completed successfully');
   } catch (error) {
     console.error(`Error downloading ${platform} video:`, error);
     throw new Error(`Failed to download video from ${platform}`);
+  }
+};
+
+// Helper to show a toast notification
+const toast = {
+  success: (message: string) => {
+    console.log(`Success: ${message}`);
+    // In a real app, you would use a toast library
+    // This is a fallback for the demo
+    alert(message);
+  },
+  error: (message: string) => {
+    console.error(`Error: ${message}`);
+    alert(`Error: ${message}`);
+  },
+  info: (message: string) => {
+    console.log(`Info: ${message}`);
+    alert(message);
   }
 };
